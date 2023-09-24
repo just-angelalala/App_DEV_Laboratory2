@@ -67,4 +67,45 @@ class MainController extends BaseController
             return redirect()->to('/')->withInput();
         }
     }
+
+    public function searchSong(){
+        $searchLike = $this->request->getVar('search');
+        if(!empty($searchLike)){
+            $data = [
+              'music' => $this->music->like('musicName',$searchLike)->findAll(),
+              'my_playlist'=> $this->myplaylist->findAll(),
+            ];
+            return view('weiboooo/index', $data);
+        }else{
+            return redirect()->to('/');
+        }
+    }
+    
+    public function createPlaylist(){
+        $data = [
+            'musicID' => $this->request->getVar('musicID'),
+            'playlistID' => $this->request->getVar('playlist')
+          ];
+          $this->musictrack->save($data);
+
+          return redirect()->to('/');
+    }  
+
+    public function addToPlaylist(){
+        $data = [
+          'musicID' => $this->request->getVar('musicID'),
+          'playlistID' => $this->request->getVar('playlist')
+          ];
+
+          $this->musictrack->save($data);
+
+          return redirect()->to('/');
+    }
+
+    public function playlist($id = null){
+        $db = \Config\Database::connect();
+        $builder = $db->table('musictrack');
+        $builder->select('*');
+    }
+   
 }

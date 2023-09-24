@@ -10,13 +10,16 @@
 
           <!-- Modal body -->
           <div class="modal-body">
-          <form action="/" method="post">
+          <form action="/addToPlaylist" method="post">
             <!-- <p id="modalData"></p> -->
             <input type="hidden" id="musicID" name="musicID">
             <select  name="playlist" class="form-control" >
 
-              <option value="playlist">playlist</option>
-
+                <?php foreach ($playlists as $playlist) :?>
+                    <option value="<?=$playlists['playlistID']?>"> 
+                    <?=$playlists['playlistName']?>
+                </option>
+                <?php endforeach;?>
             </select>
             <input type="submit" name="add">
             </form>

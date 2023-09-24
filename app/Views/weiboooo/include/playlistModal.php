@@ -2,21 +2,24 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <h5 class="modal-title" id="exampleModalLabel">My Playlist</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <br>
-
-              <a href="/playlist/">My Playlist</a>
+              <?php foreach ($playlists as $pplaylist):?>
               <br>
-
+                 <a href="/playlist/<?=$playlist['playlistID']?>"><?=$playlist['playlistName']?>My Playlist</a>
+              <br>
+              <?php endforeach;?>
 
         </div>
         <div class="modal-footer">
-          <a href="#" data-bs-dismiss="modal">Close</a>
-          <a href="#" data-bs-toggle="modal" data-bs-target="#createPlaylist">Create New</a>
-
+            <form action="/createPlaylist" method="post">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Enter Playlist Name" aria-describedby="button-addon2" name="playlistName">
+                    <input class="btn btn-primary" type="submit" value="Create Playlist">
+                </div>
+            </form>
         </div>
       </div>
     </div>
