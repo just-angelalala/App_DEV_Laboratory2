@@ -13,7 +13,7 @@ class Musictrack extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['musicID','playistID'];
+    protected $allowedFields    = ['musicID','playlistID'];
 
     // Dates
     protected $useTimestamps = false;

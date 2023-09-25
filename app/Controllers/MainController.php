@@ -31,9 +31,9 @@ class MainController extends BaseController
 
     public function upload(){
         $file = $this->request->getFile('songFile');
-        var_dump($file);
+        //var_dump($file);
 
-        $newFileName = $file ->getRandomName();
+        $newFileName = $file->getRandomName();
 
         $data = [
             'musicName' => $file->getName(),
@@ -42,13 +42,15 @@ class MainController extends BaseController
         $rules = [
             'songFile' => [
                 'uploaded[songFile]',
-                'mime_in[songFile,audio/mpeg,audio/mp3,audio/wav]',
+                'mime_in[songFile,audio/mpeg]',
                 'max_size[songFile,10240]',
                 'ext_in[songFile,mp3]',
             ]
         ];
 
-        if (!$this->validate($rules)) 
+        //var_dump($data);
+
+        if ($this->validate($rules)) 
         {
             if($file->isValid() && !$file->hasMoved())
             {
@@ -61,11 +63,23 @@ class MainController extends BaseController
                 {
                     echo $file->getErrorString().''.$file->getError();
                 }
-            }else{
-                 $data['validation'] = $this->validator;
+            }      
+        }else{
+            $data['validation'] = $this->validator;
+            // Check if there are any validation errors
+            if ($data['validation']->getErrors()) {
+                // Get the array of error messages
+                $errorMessages = $data['validation']->getErrors();
+                
+                // Loop through the error messages and do something with them
+                foreach ($errorMessages as $field => $error) {
+                    echo "Field: $field - Error: $error<br>";
+                }
+            } else {
+                echo "No validation errors.";
             }
-            return redirect()->to('/')->withInput();
-        }
+       }
+         return redirect()->to('/')->withInput();
     }
 
     public function searchSong(){
@@ -73,7 +87,7 @@ class MainController extends BaseController
         if(!empty($searchLike)){
             $data = [
               'music' => $this->music->like('musicName',$searchLike)->findAll(),
-              'my_playlist'=> $this->myplaylist->findAll(),
+              'myplaylist'=> $this->myplaylist->findAll(),
             ];
             return view('weiboooo/index', $data);
         }else{
@@ -83,10 +97,9 @@ class MainController extends BaseController
     
     public function createPlaylist(){
         $data = [
-            'musicID' => $this->request->getVar('musicID'),
-            'playlistID' => $this->request->getVar('playlist')
+            'playlistName' => $this->request->getVar('playlistName')
           ];
-          $this->musictrack->save($data);
+          $this->myplaylist->save($data);
 
           return redirect()->to('/');
     }  
@@ -104,8 +117,29 @@ class MainController extends BaseController
 
     public function playlist($id = null){
         $db = \Config\Database::connect();
-        $builder = $db->table('musictrack');
-        $builder->select('*');
+        $builder = $db->table('music');
+
+        $builder->select(['music.id','music.musicName','music.musicLink','my_playlist.playlistID', 'my_playlist.playlistName']);
+        $builder->join('music_track','music.id = music_track.musicID');
+        $builder->join('my_playlist','music_track.playlistID = my_playlist.playlistID');
+        
+        if ($id !== null) {
+            $builder->where('my_playlist.playlistID', $id);
+    }
+    $query = $builder->get();
+
+    $data = [
+      'music' => $this->music->findAll(),
+      'myplaylist' => $this->myplaylist->findAll(),
+    ];
+
+    if($query) {
+        $data['music'] = $query->getResultArray();
+    }else {
+        echo "Query Failed";
+    }
+    return view('weiboooo/index', $data);
+
     }
    
 }

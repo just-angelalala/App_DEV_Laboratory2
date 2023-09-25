@@ -15,9 +15,9 @@
             <input type="hidden" id="musicID" name="musicID">
             <select  name="playlist" class="form-control" >
 
-                <?php foreach ($playlists as $playlist) :?>
-                    <option value="<?=$playlists['playlistID']?>"> 
-                    <?=$playlists['playlistName']?>
+                <?php foreach ($myplaylist as $playlist) :?>
+                    <option value="<?=$playlist['playlistID']?>"> 
+                    <?=$playlist['playlistName']?>
                 </option>
                 <?php endforeach;?>
             </select>
